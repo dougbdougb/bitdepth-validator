@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>16-Bit Image Quality Validator | Forensic Inspector</title>
+    <link rel="stylesheet" href="static/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Roboto+Mono:wght@400;600&display=swap"
+        rel="stylesheet">
+</head>
+
+<body class="forensic-theme">
+    <header>
+        <div class="logo">
+            <span class="accent">16-BIT</span> VALIDATOR
+            <span class="version">v1.0 PoC</span>
+        </div>
+        <div class="session-info" id="sessionPath">No image loaded</div>
+    </header>
+
+    <main>
+        <section class="sidebar">
+            <div class="panel upload-zone" id="dropZone">
+                <input type="file" id="fileInput" accept=".png" hidden>
+                <div class="upload-content">
+                    <svg class="icon" viewBox="0 0 24 24">
+                        <path
+                            d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z" />
+                    </svg>
+                    <p>DRAG & DROP PNG</p>
+                    <span class="hint">Strict 16-bit Validation</span>
+                </div>
+            </div>
+
+            <div class="panel metrics-panel" id="metricsPanel">
+                <div class="section-header">
+                    <h3>AUTHENTICITY</h3>
+                    <div class="info-tag">?
+                        <span class="tooltip">Detects if the 16-bit container holds "fake" 8-bit data. True 16-bit
+                            should have active LSBs and no gaps in the histogram.</span>
+                    </div>
+                </div>
+                <div class="metric-row">
+                    <span class="label">Effective Depth</span>
+                    <span class="value" id="effDepth">-</span>
+                </div>
+                <div class="metric-row">
+                    <span class="label">LSB Padding</span>
+                    <span class="value" id="lsbPadding">-</span>
+                </div>
+                <div class="metric-row">
+                    <span class="label">Unique Ratio</span>
+                    <span class="value" id="uniqueRatio">-</span>
+                </div>
+                <div class="metric-row">
+                    <span class="label">Likely Upscaled</span>
+                    <span class="value" id="isUpscaled">-</span>
+                </div>
+
+                <div class="section-header">
+                    <h3>STABILITY</h3>
+                    <div class="info-tag">?
+                        <span class="tooltip">"Break it to test it." We apply a severe contrast curve to see if the
+                            image tears into visible steps (banding). Higher stress = more aggressive test.</span>
+                    </div>
+                </div>
+                <div class="metric-row">
+                    <span class="label">Banding Score</span>
+                    <span class="value" id="bandingScore">-</span>
+                </div>
+                <div class="control-row">
+                    <label>Stress Intensity</label>
+                    <input type="range" id="stressIntensity" min="1" max="50" value="15">
+                    <span id="intensityVal">15</span>
+                </div>
+
+                <div class="section-header">
+                    <h3>NATURE</h3>
+                    <div class="info-tag">?
+                        <span class="tooltip">Analyzes high-frequency texture. Look for random "sand" (Natural) vs.
+                            geometric grids (Synthetic). Solid grey is perfect for Digital Art, but suspicious for Raw
+                            Photos.</span>
+                    </div>
+                </div>
+                <div class="metric-row">
+                    <span class="label">FFT Spike Ratio</span>
+                    <span class="value" id="fftRatio">-</span>
+                </div>
+                <div class="metric-row">
+                    <span class="label">Correlation</span>
+                    <span class="value" id="channelCorr">-</span>
+                </div>
+                <div class="control-row">
+                    <label>Noise Boost</label>
+                    <input type="range" id="noiseBoost" min="1" max="10" value="1" step="0.5">
+                    <span id="boostVal">1.0x</span>
+                </div>
+            </div>
+        </section>
+
+        <section class="viewer">
+            <div class="toolbar">
+                <div class="btn-group">
+                    <button class="active" data-view="original">ORIGINAL</button>
+                </div>
+                <div class="btn-group">
+                    <button data-view="stress">STRESSED</button>
+                    <span class="btn-tooltip">Severe S-Curve contrast boost. Reveals banding hidden in the original
+                        data.</span>
+                </div>
+                <div class="btn-group">
+                    <button data-view="banding">BANDING</button>
+                    <span class="btn-tooltip">Diagnostic heatmap. Red overlay highlights detected discrete "steps" in
+                        gradients.</span>
+                </div>
+                <div class="btn-group">
+                    <button data-view="noise">RESIDUAL</button>
+                    <span class="btn-tooltip">High-pass noise plane. (1) Random sand = Natural. (2) Geometric grids =
+                        Synthetic. (3) Solid grey = Clean (Good for Digital, suspicious for Photo).</span>
+                </div>
+                <div class="btn-group">
+                    <button data-view="fft">SPECTRUM</button>
+                    <span class="btn-tooltip">2D FFT Magnitude. Geometric "stars" indicate artificial periodic noise or
+                        upscaling.</span>
+                </div>
+            </div>
+            <div class="canvas-container">
+                <div id="loader" class="loader hidden">
+                    <div class="spinner"></div>
+                    <p>ANALYZING PIXELS...</p>
+                </div>
+                <img id="mainImage" src="" alt="Forensic View">
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="status-bar">
+            SYSTEM READY // IDLE
+        </div>
+    </footer>
+
+    <script src="static/app.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,57 @@
+# --- Core Image Processing & Math ---
+# NumPy is the foundation for all pixel math. 
+# We need a recent version for optimal performance with large arrays.
+numpy>=1.24.0
+
+# OpenCV (Headless) is the primary I/O engine. 
+# "Headless" avoids installing X11/GUI dependencies on servers.
+# It is the fastest option for reading 16-bit PNGs.
+opencv-python-headless>=4.8.0
+
+# SciPy is required for FFT (Fast Fourier Transform) used in 
+# Histogram Gap Detection and Noise Frequency Analysis.
+scipy>=1.10.0
+
+# Scikit-Image provides structural similarity metrics (SSIM) 
+# and advanced edge detection algorithms (Canny, Sobel) optimized for Python.
+scikit-image>=0.21.0
+
+# --- Advanced Color & format support ---
+# Colour-Science is the industry standard for color space conversions 
+# (e.g., RGB to Lab) which is critical for accurate Delta-E calculations.
+colour-science>=0.4.2
+
+# OpenImageIO (via imageio) is included for the future expansion into EXR 
+# and as a fallback if OpenCV struggles with specific PNG sub-formats.
+imageio>=2.31.0
+
+# --- Web Framework & API (The Wrapper) ---
+# FastAPI is chosen for high-performance async handling of image requests.
+fastapi>=0.100.0
+
+# Uvicorn is the lightning-fast ASGI server to run the web app.
+uvicorn[standard]>=0.23.0
+
+# Python-Multipart is required to handle file uploads via the Web UI.
+python-multipart>=0.0.6
+
+# --- CLI & Reporting ---
+# Click is used to build the Command Line Interface. 
+# It handles flags, arguments, and help messages cleanly.
+click>=8.1.0
+
+# Jinja2 is used to generate the static HTML reports for batch runs.
+jinja2>=3.1.0
+
+# Rich provides beautiful terminal formatting (progress bars, 
+# colored tables) for the CLI output.
+rich>=13.5.0
+
+# --- Visualization (Server-Side) ---
+# Matplotlib is used to generate histograms and specific 
+# data plots that will be embedded in reports or the Web UI.
+matplotlib>=3.7.0
+
+# --- Testing & Quality Assurance ---
+# Pytest for running unit tests against the validator itself.
+pytest>=7.4.0
