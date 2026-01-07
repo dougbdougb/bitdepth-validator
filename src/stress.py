@@ -121,9 +121,13 @@ def detect_banding_artifacts(img: np.ndarray, external_texture_mask: np.ndarray 
                 banded_count += 1
                 
     score = (banded_count / (candidate_tiles + 1e-6)) * 100.0
+    analysis_ratio = (candidate_tiles / (h_blocks * w_blocks + 1e-6)) * 100.0
+    global_score = (banded_count / (h_blocks * w_blocks + 1e-6)) * 100.0
     
     return {
         "banding_score": float(round(score, 4)),
+        "global_score": float(round(global_score, 4)),
+        "analysis_ratio": float(round(analysis_ratio, 4)),
         "is_severe": bool(score > 5.0),
         "heatmap_mask": banding_mask
     }
@@ -155,6 +159,8 @@ def run_stress_test(img: np.ndarray, intensity: float = 15.0) -> dict:
     return {
         "stress_intensity": intensity,
         "banding_metric": analysis["banding_score"],
+        "global_impact": analysis["global_score"],
+        "analyzed_area": analysis["analysis_ratio"],
         "passed": not analysis["is_severe"],
         "heatmap_mask": analysis["heatmap_mask"],
         "stressed_image_preview": res_img

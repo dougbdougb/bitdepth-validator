@@ -125,9 +125,25 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    async function checkAnalysisResponse(resp, actionName) {
+        if (!resp.ok) {
+            const contentType = resp.headers.get("content-type");
+            let errorDetail = "";
+            if (contentType && contentType.includes("application/json")) {
+                const data = await resp.json();
+                errorDetail = data.detail || "Unknown error";
+            } else {
+                const text = await resp.text();
+                errorDetail = `Server Error (${resp.status}): ${text.slice(0, 100)}`;
+            }
+            throw new Error(`${actionName} failed: ${errorDetail}`);
+        }
+        return await resp.json();
+    }
+
     async function runAuthenticityAnalysis() {
         const resp = await fetch(`/analyze/authenticity/${currentSessionId}`);
-        const data = await resp.json();
+        const data = await checkAnalysisResponse(resp, "Authenticity check");
 
         ui.effDepth.textContent = `${data.bit_depth.effective_depth}-bit`;
         ui.lsbPadding.textContent = data.bit_depth.is_padded ? `Padded (LSB ${data.bit_depth.lowest_active_bit})` : "None";
@@ -141,7 +157,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     async function runNoiseAnalysis() {
         const resp = await fetch(`/analyze/noise/${currentSessionId}`);
-        const data = await resp.json();
+        const data = await checkAnalysisResponse(resp, "Noise analysis");
 
         ui.fftRatio.textContent = data.fft_spike_ratio;
         ui.fftRatio.className = data.has_periodic_patterns ? 'value fail' : 'value pass';
@@ -157,7 +173,7 @@ document.addEventListener('DOMContentLoaded', () => {
     async function runStressAnalysis() {
         const intensity = stressIntensity.value;
         const resp = await fetch(`/analyze/stress/${currentSessionId}?intensity=${intensity}`);
-        const data = await resp.json();
+        const data = await checkAnalysisResponse(resp, "Stress test");
 
         ui.bandingScore.textContent = `${data.banding_metric.toFixed(2)}%`;
         document.getElementById('analyzed_area').textContent = (data.analyzed_area || 0).toFixed(1) + '%';
