@@ -90,7 +90,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
         try {
             const resp = await fetch('/upload', { method: 'POST', body: formData });
-            const data = await resp.json();
+
+            // Handle non-JSON responses (like 413 or 500 HTML pages)
+            const contentType = resp.headers.get("content-type");
+            let data = {};
+            if (contentType && contentType.includes("application/json")) {
+                data = await resp.json();
+            } else {
+                const text = await resp.text();
+                throw new Error(`Server returned non-JSON response (${resp.status}): ${text.slice(0, 100)}`);
+            }
 
             if (resp.ok) {
                 currentSessionId = data.session_id;
@@ -106,11 +115,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 updateImageView();
             } else {
-                alert(`Upload failed: ${data.detail}`);
+                alert(`Upload failed: ${data.detail || 'Unknown error'}`);
             }
         } catch (err) {
             console.error(err);
-            alert("Network error during upload.");
+            alert(`Error during upload: ${err.message}`);
         } finally {
             setLoading(false);
         }
@@ -150,7 +159,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const resp = await fetch(`/analyze/stress/${currentSessionId}?intensity=${intensity}`);
         const data = await resp.json();
 
-        ui.bandingScore.textContent = `${data.banding_metric.toFixed(4)}%`;
+        ui.bandingScore.textContent = `${data.banding_metric.toFixed(2)}%`;
+        document.getElementById('analyzed_area').textContent = (data.analyzed_area || 0).toFixed(1) + '%';
+        document.getElementById('global_impact').textContent = (data.global_impact || 0).toFixed(2) + '%';
         ui.bandingScore.className = data.passed ? 'value pass' : 'value fail';
     }
 

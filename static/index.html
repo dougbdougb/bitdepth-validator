@@ -4,39 +4,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>16-Bit Image Quality Validator | Forensic Inspector</title>
+    <title>16-Bit Image Quality Validator // Forensic</title>
     <link rel="stylesheet" href="static/style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Roboto+Mono:wght@400;600&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Roboto+Mono:wght@400;700&display=swap"
         rel="stylesheet">
 </head>
 
-<body class="forensic-theme">
+<body>
     <header>
         <div class="logo">
-            <span class="accent">16-BIT</span> VALIDATOR
-            <span class="version">v1.0 PoC</span>
+            <h1>BIT-DEPTH VALIDATOR</h1>
+            <span class="version">V6.1 // FORENSIC ENGINE</span>
         </div>
-        <div class="session-info" id="sessionPath">No image loaded</div>
+        <div class="status-bar">SYSTEM // READY</div>
     </header>
 
     <main>
         <section class="sidebar">
-            <div class="panel upload-zone" id="dropZone">
-                <input type="file" id="fileInput" accept=".png" hidden>
-                <div class="upload-content">
-                    <svg class="icon" viewBox="0 0 24 24">
-                        <path
-                            d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z" />
-                    </svg>
-                    <p>DRAG & DROP PNG</p>
-                    <span class="hint">Strict 16-bit Validation</span>
-                </div>
+            <div id="dropZone" class="drop-zone">
+                <div class="drop-icon">↑</div>
+                <p>DRAG & DROP IMAGE</p>
+                <span>SUPPORTING 16-BIT PNG / TIFF</span>
+                <input type="file" id="fileInput" hidden>
             </div>
 
-            <div class="panel metrics-panel" id="metricsPanel">
+            <div class="metrics-panel">
                 <div class="section-header">
                     <h3>AUTHENTICITY</h3>
                     <div class="info-tag">?
@@ -72,6 +67,14 @@
                     <span class="label">Banding Score</span>
                     <span class="value" id="bandingScore">-</span>
                 </div>
+                <div class="sub-metric-row">
+                    <span class="sub-label">Analyzed Area:</span>
+                    <span id="analyzed_area" class="sub-val">--</span>
+                </div>
+                <div class="sub-metric-row">
+                    <span class="sub-label">Global Impact:</span>
+                    <span id="global_impact" class="sub-val">--</span>
+                </div>
                 <div class="control-row">
                     <label>Stress Intensity</label>
                     <input type="range" id="stressIntensity" min="1" max="50" value="15">
@@ -91,18 +94,23 @@
                     <span class="value" id="fftRatio">-</span>
                 </div>
                 <div class="metric-row">
-                    <span class="label">Correlation</span>
+                    <span class="label">Channel Correlation</span>
                     <span class="value" id="channelCorr">-</span>
                 </div>
                 <div class="control-row">
                     <label>Noise Boost</label>
-                    <input type="range" id="noiseBoost" min="1" max="10" value="1" step="0.5">
-                    <span id="boostVal">1.0x</span>
+                    <input type="range" id="noiseBoost" min="1" max="10" step="0.5" value="1">
+                    <span id="boostVal">1x</span>
                 </div>
+            </div>
+
+            <div class="session-info">
+                <span class="label">SESSION:</span>
+                <span id="sessionPath">--</span>
             </div>
         </section>
 
-        <section class="viewer">
+        <section class="viewport">
             <div class="toolbar">
                 <div class="btn-group">
                     <button class="active" data-view="original">ORIGINAL</button>
@@ -137,12 +145,6 @@
             </div>
         </section>
     </main>
-
-    <footer>
-        <div class="status-bar">
-            SYSTEM READY // IDLE
-        </div>
-    </footer>
 
     <script src="static/app.js"></script>
 </body>
