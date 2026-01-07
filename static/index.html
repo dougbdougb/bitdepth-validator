@@ -13,10 +13,10 @@
         rel="stylesheet">
 </head>
 
-<body>
+<body class="forensic-theme">
     <header>
         <div class="logo">
-            <h1>BIT-DEPTH VALIDATOR</h1>
+            <span class="accent">BIT-DEPTH</span> VALIDATOR
             <span class="version">V6.1 // FORENSIC ENGINE</span>
         </div>
         <div class="status-bar">SYSTEM // READY</div>
@@ -24,10 +24,14 @@
 
     <main>
         <section class="sidebar">
-            <div id="dropZone" class="drop-zone">
-                <div class="drop-icon">↑</div>
-                <p>DRAG & DROP IMAGE</p>
-                <span>SUPPORTING 16-BIT PNG / TIFF</span>
+            <div id="dropZone" class="panel upload-zone">
+                <div class="upload-content">
+                    <svg class="icon" viewBox="0 0 24 24">
+                        <path d="M9 16h6v-6h4l-7-7-7 7h4v6zm-4 2h14v2H5v-2z" />
+                    </svg>
+                    <p>DRAG & DROP IMAGE</p>
+                    <span class="hint">SUPPORTING 16-BIT PNG / TIFF</span>
+                </div>
                 <input type="file" id="fileInput" hidden>
             </div>
 
@@ -110,7 +114,7 @@
             </div>
         </section>
 
-        <section class="viewport">
+        <section class="viewer">
             <div class="toolbar">
                 <div class="btn-group">
                     <button class="active" data-view="original">ORIGINAL</button>
